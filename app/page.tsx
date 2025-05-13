@@ -4,6 +4,8 @@ import FeatureCard from "@/components/feature-card"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 
+import prisma from "@/lib/db"
+
 export default function Home() {
   return (
     <main className="min-h-screen">
@@ -207,3 +209,5 @@ export default function Home() {
     </main>
   )
 }
+
+
