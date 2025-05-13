@@ -1,5 +1,20 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Overview
+
+This project serves as a comprehensive Next.js template designed to kickstart your development process. It comes pre-configured with:
+
+- **Next.js 14+ (App Router)**: Leveraging the latest features of Next.js for optimal performance and developer experience.
+- **Shadcn UI**: A collection of beautifully designed, accessible, and customizable UI components built on top of Radix UI and Tailwind CSS.
+- **Tailwind CSS v4 (Oxide Engine)**: Utilizing the next generation of Tailwind CSS for enhanced performance and developer workflow.
+
+### Future Integrations (Planned)
+
+We plan to integrate the following features soon:
+
+- **Prisma**: For easy database access and management.
+- **Lemon Squeezy / Razorpay**: For seamless payment processing integration.
+
 ## Getting Started
 
 First, run the development server:
