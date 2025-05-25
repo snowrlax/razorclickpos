@@ -78,7 +78,7 @@ export default function SignUp() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          {/* <form onSubmit={handleSubmit}>
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Name</span>
@@ -135,7 +135,7 @@ export default function SignUp() {
                 {isLoading ? "Creating account..." : "Sign Up"}
               </button>
             </div>
-          </form>
+          </form> */}
 
           <div className="divider">OR</div>
 
