@@ -1,14 +1,14 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import type { Provider } from "next-auth/providers";
-import Nodemailer from "next-auth/providers/nodemailer";
+// import Nodemailer from "next-auth/providers/nodemailer";
 
 const providers: Provider[] = [
   Google,
-  Nodemailer({
-    server: process.env.EMAIL_SERVER,
-    from: process.env.EMAIL_FROM,
-  }),
+  // Nodemailer({
+  //   server: process.env.EMAIL_SERVER,
+  //   from: process.env.EMAIL_FROM,
+  // }),
 ];
 
 export const providerMap = providers
@@ -24,7 +24,14 @@ export const providerMap = providers
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers,
-  callbacks: {},
+  callbacks: {
+    signIn: async ({ user, account, profile, email, credentials }) => {
+      if (account?.provider === "google") {
+        return true;
+      }
+      return false;
+    },
+  },
   pages: {
     signIn: "/signin",
   },
