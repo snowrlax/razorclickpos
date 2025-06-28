@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
+import { User, Account } from "next-auth";
 
 export const authUserWithCredentials = async (
   email: string,
@@ -40,28 +41,34 @@ export const authUserWithCredentials = async (
 };
 
 export const authUserWithGoogle = async (
-  googleId: string,
-  email: string,
-  name: string,
-  image: string
+  // accepts two objects
+  user: User,
+  account: Account
 ) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+  const userExists = await prisma.user.findUnique({
+    where: { email: user.email || "" },
+  });
 
   // if user does not exist, create user
-  if (!user) {
+  if (!userExists) {
     const createUser = await prisma.user.create({
       data: {
-        email,
-        name,
+        email: user.email,
+        name: user.name,
         accounts: {
           create: {
-            type: "oauth",
-            provider: "google",
-            providerAccountId: googleId,
+            access_token: account.access_token,
+            expires_at: account.expires_at,
+            scope: account.scope,
+            token_type: account.token_type,
+            id_token: account.id_token,
+            provider: account.provider,
+            type: account.type,
+            providerAccountId: account.providerAccountId,
           },
         },
         emailVerified: new Date(),
-        image,
+        image: user.image,
       },
     });
     return createUser;

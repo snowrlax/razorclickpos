@@ -10,6 +10,7 @@ import { Testimonials } from "@/components/testimonials";
 import { Footer } from "@/components/footer";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +34,7 @@ export default function Home() {
               )}
             </button>
             {isOpen && (
-              <ul className="dropdown-content menu menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow">
+              <ul className="menu menu-sm dropdown-content z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow">
                 <li>
                   <a href="#features">Features</a>
                 </li>
@@ -93,9 +94,11 @@ export default function Home() {
         <div className="navbar-end gap-4">
           {status === "authenticated" ? (
             <div className="flex items-center gap-4">
-              <img
-                src={session.user?.image ?? "https://i.pravatar.cc/300"}
-                alt=""
+              <Image
+                src={session.user?.image!}
+                alt="profile"
+                width={32}
+                height={32}
                 className="h-8 w-8 rounded-full"
               />
               <span className="">{session.user?.name}</span>

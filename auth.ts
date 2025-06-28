@@ -60,12 +60,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // NOT THE RIGHT WAY TO HANDLE THIS, IMPROVISE LATER
       if (account?.provider === "google") {
         if (!profile?.email) return false;
-        const authUser = await authUserWithGoogle(
-          user?.id || "",
-          user?.email || "",
-          user?.name || "",
-          user?.image || ""
-        );
+        const authUser = await authUserWithGoogle(user, account);
         if (!authUser) return false;
       }
 

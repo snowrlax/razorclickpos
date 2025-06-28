@@ -10,16 +10,19 @@ datasource db {
 // common Account model across for Merchants to add providers i.e. Google, Github, Facebook
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
   access_token      String?
   expires_at        Int?
-  token_type        String?
   scope             String?
+  token_type        String?
   id_token          String?
+  provider          String
+  type              String
+  providerAccountId String
+  
+  // maps the user to the account
+  userId            String  @db.ObjectId
+
+  refresh_token     String?
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -68,27 +71,27 @@ model VerificationToken {
 
 // SaaS Subscription Models
 model Subscription {
-  id                String             @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String             @unique @db.ObjectId
-  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  plan              SubscriptionPlan   @default(BASIC)
-  status            SubscriptionStatus @default(TRIAL)
-  
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  plan   SubscriptionPlan   @default(BASIC)
+  status SubscriptionStatus @default(TRIAL)
+
   // Stripe/Payment provider fields
-  stripeCustomerId      String?
-  stripeSubscriptionId  String?
-  stripePriceId         String?
-  
-  currentPeriodStart    DateTime
-  currentPeriodEnd      DateTime
-  trialEnd              DateTime?
-  
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
-  
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  stripePriceId        String?
+
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  trialEnd           DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Payment history
-  payments          Payment[]
+  payments Payment[]
 }
 
 enum SubscriptionPlan {
@@ -110,115 +113,115 @@ enum SubscriptionStatus {
 
 // Shop Management
 model Shop {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  description   String?
-  address       String?
-  phone         String?
-  email         String?
-  
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  address     String?
+  phone       String?
+  email       String?
+
   // Owner relationship
-  ownerId       String    @db.ObjectId
-  owner         User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  
+  ownerId String @db.ObjectId
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
   // Shop data
-  customers     Customer[]
-  services      Service[]
-  transactions  Transaction[]
-  
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  customers    Customer[]
+  services     Service[]
+  transactions Transaction[]
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Customer Management
 model Customer {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  email         String?
-  phone         String    @unique // Globally unique phone number
-  address       String?
-  notes         String?
-  
-  shopId        String    @db.ObjectId
-  shop          Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  email   String?
+  phone   String  @unique // Globally unique phone number
+  address String?
+  notes   String?
+
+  shopId String @db.ObjectId
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
   // Customer history
-  transactions  Transaction[]
-  
+  transactions Transaction[]
+
   // Customer stats
-  totalVisits   Int       @default(0)
-  totalSpent    Float     @default(0.0)
-  lastVisit     DateTime?
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  totalVisits Int       @default(0)
+  totalSpent  Float     @default(0.0)
+  lastVisit   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Service Management
 model Service {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  description   String?
-  price         Float
-  category      String?   // e.g., "Haircut", "Shave", "Styling"
-  
-  shopId        String    @db.ObjectId
-  shop          Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  price       Float
+  category    String? // e.g., "Haircut", "Shave", "Styling"
+
+  shopId String @db.ObjectId
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
   // Service usage
   transactionItems TransactionItem[]
-  
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Transaction/Payment Management
 model Transaction {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  
-  customerId    String    @db.ObjectId
-  customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  
-  shopId        String    @db.ObjectId
-  shop          Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  customerId String   @db.ObjectId
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  shopId String @db.ObjectId
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
   // Transaction details
-  subtotal      Float
-  tax           Float     @default(0.0)
-  discount      Float     @default(0.0)
-  tip           Float     @default(0.0)
-  total         Float
-  
+  subtotal Float
+  tax      Float @default(0.0)
+  discount Float @default(0.0)
+  tip      Float @default(0.0)
+  total    Float
+
   paymentMethod PaymentMethod
   paymentStatus PaymentStatus @default(PENDING)
-  
+
   // Payment provider details (for card payments)
   stripePaymentIntentId String?
-  
+
   // Items/Services
-  items         TransactionItem[]
-  
-  notes         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  items TransactionItem[]
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model TransactionItem {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
   transactionId String      @db.ObjectId
   transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  
-  serviceId     String      @db.ObjectId
-  service       Service     @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  
-  quantity      Int         @default(1)
-  unitPrice     Float       // Price at time of sale
-  totalPrice    Float       // unitPrice * quantity
-  
-  createdAt     DateTime    @default(now())
+
+  serviceId String  @db.ObjectId
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  quantity   Int   @default(1)
+  unitPrice  Float // Price at time of sale
+  totalPrice Float // unitPrice * quantity
+
+  createdAt DateTime @default(now())
 }
 
 enum PaymentMethod {
@@ -240,27 +243,27 @@ enum PaymentStatus {
 
 // SaaS Payment Management
 model Payment {
-  id                String        @id @default(auto()) @map("_id") @db.ObjectId
-  
-  subscriptionId    String        @db.ObjectId
-  subscription      Subscription  @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-  
-  amount            Float
-  currency          String        @default("usd")
-  status            PaymentStatus @default(PENDING)
-  
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  subscriptionId String       @db.ObjectId
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  amount   Float
+  currency String        @default("usd")
+  status   PaymentStatus @default(PENDING)
+
   // Stripe details
   stripePaymentIntentId String?
   stripeInvoiceId       String?
-  
+
   // Payment period
-  periodStart       DateTime
-  periodEnd         DateTime
-  
-  paidAt            DateTime?
-  failedAt          DateTime?
-  failureReason     String?
-  
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  periodStart DateTime
+  periodEnd   DateTime
+
+  paidAt        DateTime?
+  failedAt      DateTime?
+  failureReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

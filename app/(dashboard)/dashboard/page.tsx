@@ -6,7 +6,10 @@ import React from "react";
 export default async function Dashboard() {
   const session = await auth();
 
-  if (!session?.user?.id) {
+  console.log(session, "sessionaaa");
+  
+
+  if (!session?.user) {
     // This should not happen if the user is authenticated.
     // It's a good practice to handle this case.
     redirect("/signin");
@@ -16,7 +19,7 @@ export default async function Dashboard() {
   // make server action to fetch the data from database or call the endpoint from the server actions.  
   const user = await prisma.user.findUnique({
     where: {
-      id: session.user.id,
+      email: session.user.email!,
     },
   });
 
