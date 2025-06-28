@@ -61,10 +61,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account?.provider === "google") {
         if (!profile?.email) return false;
         const authUser = await authUserWithGoogle(user, account);
+
+        // set the authUser in the session if the authUser is not null in the session callback in authjs
+        console.log("authUser", authUser);
+        
+
         if (!authUser) return false;
       }
 
       return true;
+    },
+    async session({ session, user, token }) {
+      // console.log("session", session);
+      console.log("user in session callback", session, user);
+      // console.log("token", token);
+      return session;
     },
   },
   pages: {

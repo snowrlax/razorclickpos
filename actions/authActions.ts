@@ -75,7 +75,7 @@ export const authUserWithGoogle = async (
   }
 
   // if user exists, just return user to log them in the application
-  return user;
+  return userExists;
 };
 
 export const sendOTP = async (email: string) => {

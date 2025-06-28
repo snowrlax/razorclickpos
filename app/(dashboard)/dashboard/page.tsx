@@ -16,7 +16,9 @@ export default async function Dashboard() {
   }
 
   // Fetch the full user profile from the database
-  // make server action to fetch the data from database or call the endpoint from the server actions.  
+  // make server action to fetch the data from database or call the endpoint from the server actions.
+
+  // call the /user/profile endpoint
   const user = await prisma.user.findUnique({
     where: {
       email: session.user.email!,

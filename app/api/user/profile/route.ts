@@ -2,16 +2,17 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 
-export async function GET() {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-  }
+export async function POST(request: Request) {
+  const body = await request.json();
+  const { email } = body;
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { email },
+      include: {
+        accounts: true,  
+        shops: true,
+      },
     });
 
     if (!user) {
@@ -25,4 +26,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-} 
+}

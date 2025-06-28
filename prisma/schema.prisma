@@ -163,7 +163,7 @@ model Service {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String?
-  price       Float
+  price       Float?
   category    String? // e.g., "Haircut", "Shave", "Styling"
 
   shopId String @db.ObjectId
