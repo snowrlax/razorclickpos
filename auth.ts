@@ -7,6 +7,8 @@ import {
   authUserWithCredentials,
   authUserWithGoogle,
 } from "./actions/authActions";
+import prisma from "@/lib/db"
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -51,6 +53,7 @@ export const providerMap = providers
   .filter((provider) => provider.id !== "credentials");
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers,
   callbacks: {
     signIn: async ({ user, account, profile, email, credentials }) => {
