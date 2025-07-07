@@ -19,27 +19,27 @@ export default async function Dashboard() {
   // make server action to fetch the data from database or call the endpoint from the server actions.
 
   // call the /user/profile endpoint
-  const user = await prisma.user.findUnique({
-    where: {
-      email: session.user.email!,
-    },
-  });
+  // const user = await prisma.user.findUnique({
+  //   where: {
+  //     email: session.user.email!,
+  //   },
+  // });
 
-  if (!user) {
-    // Handle case where user is not found in the DB, though this is unlikely
-    // if they have a valid session.
-    redirect("/signin");
-  }
+  // if (!user) {
+  //   // Handle case where user is not found in the DB, though this is unlikely
+  //   // if they have a valid session.
+  //   redirect("/signin");
+  // }
 
 
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>Welcome, {user.name || "User"}!</p>
-      <p>Email: {user.email}</p>
+      <p>Welcome, {JSON.stringify(session) || "User"}!</p>
+      {/* <p>Email: {user.email}</p> */}
       
       <h2>Full User Data:</h2>
-      <pre>{JSON.stringify(user, null, 2)}</pre>
+      <pre>{JSON.stringify(session.user, null, 2)}</pre>
     </div>
   );
 }
